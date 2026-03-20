@@ -11,7 +11,9 @@ app.use(express.json());
 // 🔥 AQUÍ ESTÁ LA CLAVE
 app.use('/api/orders', ordersRoutes);
 app.use('/api/payments', paymentsRoutes);
-
+app.get('/', (req, res) => {
+  res.send('PinolApp API funcionando 🚀');
+});
 app.listen(4000, () => {
   console.log('Servidor corriendo en puerto 4000');
 });
