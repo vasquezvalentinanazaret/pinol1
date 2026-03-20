@@ -8,7 +8,7 @@ import Home from "./src/screens/HomeScreen";
 import Cart from "./src/screens/CartScreen";
 import Checkout from "./src/screens/CheckoutScreen";
 import Tracking from "./src/screens/OrderTrackingScreen";
-
+import Menu from "./src/screens/MenuScreen";
 const Stack = createNativeStackNavigator();
 
 export default function App(){
