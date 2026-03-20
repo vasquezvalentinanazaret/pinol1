@@ -1,26 +1,38 @@
-import React from "react";
-import { View, Button } from "react-native";
-import { API } from "../services/api";
+import { View, Button } from 'react-native';
+import { useCart } from '../context/CartContext';
 
-export default function Checkout({navigation}){
-  const createOrder = async ()=>{
-    const order = await API.post("/orders",{
-      items:[],
-      total:10,
-      paymentMethod:"cash"
-    },{
-      headers:{Authorization:`Bearer ${global.token}`}
+export default function CheckoutScreen() {
+  const { cart, total, clearCart } = useCart();
+
+  const createOrder = async () => {
+    const res = await fetch('http://TU_IP:4000/api/orders', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        items: cart,
+        total,
+        paymentMethod: 'cash'
+      })
     });
 
-    await API.post("/payments",{
-      orderId:order.data.id,
-      method:"cash"
-    },{
-      headers:{Authorization:`Bearer ${global.token}`}
+    const order = await res.json();
+
+    await fetch('http://TU_IP:4000/api/payments', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        orderId: order.id,
+        method: 'cash'
+      })
     });
 
-    navigation.navigate("Tracking",{orderId:order.data.id});
-  }
+    clearCart();
+    alert('Pedido realizado 🚀');
+  };
 
-  return <View><Button title="Confirmar" onPress={createOrder}/></View>
+  return (
+    <View>
+      <Button title="Confirmar Pedido" onPress={createOrder} />
+    </View>
+  );
 }
