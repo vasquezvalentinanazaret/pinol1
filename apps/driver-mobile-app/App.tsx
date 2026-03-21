@@ -1,12 +1,19 @@
 import React from "react";
-import { View, Button } from "react-native";
-import io from "socket.io-client";
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
-const socket = io("http://localhost:4000");
+import AvailableOrders from "./src/screens/AvailableOrders";
+import ActiveDelivery from "./src/screens/ActiveDelivery";
+
+const Stack = createNativeStackNavigator();
 
 export default function App(){
-  const sendLocation = ()=>{
-    socket.emit("driver_location",{orderId:"test",lat:12,lng:-86});
-  }
-  return <View><Button title="Send Location" onPress={sendLocation}/></View>
+  return (
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen name="Orders" component={AvailableOrders}/>
+        <Stack.Screen name="ActiveDelivery" component={ActiveDelivery}/>
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
 }
