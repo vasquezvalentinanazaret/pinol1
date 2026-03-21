@@ -1,13 +1,39 @@
-import React,{useEffect} from "react";
-import { View,Text } from "react-native";
-import io from "socket.io-client";
+import React, { useEffect, useState } from "react";
+import { View, Text } from "react-native";
 
-export default function Tracking({route}){
-  useEffect(()=>{
-    const socket = io("http://localhost:4000");
-    socket.emit("join_order",route.params.orderId);
-    socket.on("status_update",(data)=>console.log(data));
-  },[]);
+const statusFlow = [
+  "CREATED",
+  "PREPARING",
+  "ON_THE_WAY",
+  "DELIVERED"
+];
 
-  return <View><Text>Tracking...</Text></View>
+export default function OrderTrackingScreen({ route }: any) {
+  const [statusIndex, setStatusIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setStatusIndex((prev) => {
+        if (prev < statusFlow.length - 1) {
+          return prev + 1;
+        }
+        clearInterval(interval);
+        return prev;
+      });
+    }, 4000); // cambia cada 4 segundos
+
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <View style={{ padding: 20 }}>
+      <Text style={{ fontSize: 20, fontWeight: "bold" }}>
+        Estado del pedido:
+      </Text>
+
+      <Text style={{ marginTop: 20, fontSize: 18 }}>
+        {statusFlow[statusIndex]}
+      </Text>
+    </View>
+  );
 }
