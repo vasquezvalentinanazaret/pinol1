@@ -1,19 +1,19 @@
-const express = require('express');
-const cors = require('cors');
+const http = require("http");
+const { Server } = require("socket.io");
 
-const ordersRoutes = require('./orders/orders.routes');
-const paymentsRoutes = require('./payments/payments.routes');
-
-const app = express();
-app.use(cors());
-app.use(express.json());
-
-// 🔥 AQUÍ ESTÁ LA CLAVE
-app.use('/api/orders', ordersRoutes);
-app.use('/api/payments', paymentsRoutes);
-app.get('/', (req, res) => {
-  res.send('PinolApp API funcionando 🚀');
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: { origin: "*" }
 });
-app.listen(4000, () => {
-  console.log('Servidor corriendo en puerto 4000');
+
+io.on("connection", (socket) => {
+  console.log("Cliente conectado");
+
+  socket.on("join_order", (orderId) => {
+    socket.join(orderId);
+  });
+});
+
+server.listen(4000, () => {
+  console.log("Servidor con sockets en 4000");
 });
